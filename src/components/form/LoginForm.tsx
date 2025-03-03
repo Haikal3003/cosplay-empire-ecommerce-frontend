@@ -1,7 +1,7 @@
 import { FcGoogle } from 'react-icons/fc';
 import Divider from '../common/Divider';
 import FormInput from '../common/FormInput';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { AuthContext, AuthContextTypes } from '../../context/AuthProvider';
 import { LoginPayload } from '../../utils/types';
@@ -13,13 +13,15 @@ export default function LoginForm() {
     password: '',
   });
 
+  const navigate = useNavigate();
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    login(formData);
+    login(formData, navigate);
   };
 
   return (

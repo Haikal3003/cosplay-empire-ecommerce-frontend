@@ -2,14 +2,13 @@ import { createContext, ReactNode, useState } from 'react';
 import { LoginPayload, RegisterPayload } from '../utils/types';
 import api from '../utils/api';
 import { delayResponse } from '../utils/delayResponse';
-import { useNavigate } from 'react-router-dom';
 
 export interface AuthContextTypes {
   loading: boolean;
   user: any;
   role: string;
   message: string;
-  login: (payload: LoginPayload) => void;
+  login: (payload: LoginPayload, navigate: (path: string) => void) => void;
   register: (payload: RegisterPayload) => void;
   logout: () => void;
 }
@@ -21,9 +20,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true);
   const [role, setRole] = useState<string>('');
   const [message, setMessage] = useState<string>('');
-  const navigate = useNavigate();
 
-  const login = async (payload: LoginPayload) => {
+  const login = async (payload: LoginPayload, navigate: (path: string) => void) => {
     setLoading(true);
     setMessage('');
 
@@ -41,7 +39,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       await delayResponse(1000);
 
       navigate(user.role === 'ADMIN' ? '/admin/dashboard' : '/home');
-    } catch (error: string | any) {
+    } catch (error: any) {
       console.error(error);
       setMessage(error.response?.data?.message || 'Login gagal. Silakan coba lagi.');
     } finally {
@@ -56,7 +54,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await api.post('/auth/register', payload);
       setMessage(response.data.message);
-    } catch (error: string | any) {
+    } catch (error: any) {
       console.error(error);
       setMessage(error.response?.data?.message || 'Register gagal. Silakan coba lagi.');
     } finally {
