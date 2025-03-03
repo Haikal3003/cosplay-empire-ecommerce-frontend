@@ -1,10 +1,11 @@
 import { Outlet } from 'react-router-dom';
-import './App.css';
 
 function App() {
   return (
     <>
-      <Outlet />
+      <main className="relative w-full h-[100vh] px-6 bg-primary flex flex-col items-center justify-center">
+        <Outlet />
+      </main>
     </>
   );
 }
