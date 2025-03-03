@@ -4,10 +4,11 @@ import FormInput from '../common/FormInput';
 import { Link } from 'react-router-dom';
 import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { AuthContext, AuthContextTypes } from '../../context/AuthProvider';
+import { LoginPayload } from '../../utils/types';
 
 export default function LoginForm() {
   const { login, loading } = useContext(AuthContext) as AuthContextTypes;
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<LoginPayload>({
     email: '',
     password: '',
   });
