@@ -65,7 +65,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = () => {};
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    setUser(null);
+    setRole('');
+  };
 
   return <AuthContext.Provider value={{ user, loading, role, message, login, register, logout }}>{children}</AuthContext.Provider>;
 }
