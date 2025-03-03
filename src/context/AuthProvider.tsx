@@ -2,15 +2,14 @@ import { createContext, ReactNode, useState } from 'react';
 import { LoginPayload, RegisterPayload } from '../utils/types';
 import api from '../utils/api';
 import { delayResponse } from '../utils/delayResponse';
-import { useNavigate } from 'react-router-dom';
 
 export interface AuthContextTypes {
   loading: boolean;
   user: any;
   role: string;
   message: string;
-  login: (payload: LoginPayload) => void;
-  register: (payload: RegisterPayload) => void;
+  login: (payload: LoginPayload, navigate: (path: string) => void) => void;
+  register: (payload: RegisterPayload, navigate: (path: string) => void) => void;
   logout: () => void;
 }
 
@@ -18,12 +17,11 @@ export const AuthContext = createContext<AuthContextTypes | undefined>(undefined
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [role, setRole] = useState<string>('');
   const [message, setMessage] = useState<string>('');
-  const navigate = useNavigate();
 
-  const login = async (payload: LoginPayload) => {
+  const login = async (payload: LoginPayload, navigate: (path: string) => void) => {
     setLoading(true);
     setMessage('');
 
@@ -38,10 +36,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       setRole(user.role);
       setMessage(message);
 
-      await delayResponse(1000);
+      await delayResponse(2000);
 
       navigate(user.role === 'ADMIN' ? '/admin/dashboard' : '/home');
-    } catch (error: string | any) {
+    } catch (error: any) {
       console.error(error);
       setMessage(error.response?.data?.message || 'Login gagal. Silakan coba lagi.');
     } finally {
@@ -49,14 +47,17 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const register = async (payload: RegisterPayload) => {
+  const register = async (payload: RegisterPayload, navigate: (path: string) => void) => {
     setLoading(true);
     setMessage('');
 
     try {
       const response = await api.post('/auth/register', payload);
       setMessage(response.data.message);
-    } catch (error: string | any) {
+      await delayResponse(2000);
+
+      navigate('/login');
+    } catch (error: any) {
       console.error(error);
       setMessage(error.response?.data?.message || 'Register gagal. Silakan coba lagi.');
     } finally {
