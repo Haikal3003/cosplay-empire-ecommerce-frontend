@@ -9,6 +9,7 @@ import CustomersPage from '../pages/admin/Customers';
 import OrdersPage from '../pages/admin/Orders';
 import ReportsPage from '../pages/admin/Reports';
 import SettingsPage from '../pages/admin/Settings';
+import AddProduct from '../pages/admin/AddProduct';
 
 const router = createBrowserRouter([
   // MAIN ROUTES
@@ -47,12 +48,10 @@ const router = createBrowserRouter([
       {
         path: 'products',
         element: <ProductsPage />,
-        children: [
-          {
-            path: 'add-product',
-            element: <div>Add Product</div>,
-          },
-        ],
+      },
+      {
+        path: 'products/add-product',
+        element: <AddProduct />,
       },
       {
         path: 'customers',
