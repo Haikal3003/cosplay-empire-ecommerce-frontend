@@ -4,8 +4,9 @@ import FormInput from '../../components/common/FormInput';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { AddProductPayload } from '../../utils/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../../utils/api';
 import { usePrefix } from '../../hooks/usePrefix';
+import api from '../../utils/api';
+import { toast } from 'react-toastify';
 
 type SizeTypes = 'S' | 'M' | 'L' | 'XL';
 
@@ -34,18 +35,22 @@ export default function AddProduct() {
       });
     },
     onSuccess: () => {
-      alert('Product added successfully!');
+      toast.success('Add product successfully!!!');
+
       setImagePreview(null);
+
       queryClient.invalidateQueries({ queryKey: ['products'] });
+
       navigate(`${prefix}/products`);
     },
     onError: (error) => {
-      alert(`Failed to add product: ${error.message}`);
+      const errorMessage = error?.message || 'Failed to add product';
+      toast.error(`Error: ${errorMessage}`);
     },
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value, files, type } = e.target;
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, files, type } = e.target as HTMLInputElement;
 
     if (files && files[0]) {
       const file = files[0];
@@ -99,7 +104,10 @@ export default function AddProduct() {
       <form className="space-y-4" onSubmit={handleSubmit}>
         <FormInput id="name" name="name" label="Name" type="text" labelClassName="text-sm" inputClassName="text-sm" placeholder="Enter product name..." onChange={handleChange} />
 
-        <FormInput id="description" name="description" label="Description" type="text" labelClassName="text-sm" inputClassName="text-sm" placeholder="Enter product description..." onChange={handleChange} />
+        <div>
+          <label className="text-sm">Description</label>
+          <textarea id="description" name="description" className="w-full bg-white p-2 h-28 rounded-lg border border-slate-300 resize-none text-sm" placeholder="Enter product description..." onChange={handleChange}></textarea>
+        </div>
 
         <FormInput id="price" name="price" label="Price" type="number" labelClassName="text-sm" inputClassName="text-sm" placeholder="Enter product price..." onChange={handleChange} />
 
