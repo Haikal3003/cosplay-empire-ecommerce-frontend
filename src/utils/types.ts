@@ -22,7 +22,7 @@ export type RegisterPayload = {
 export type AddProductPayload = {
   name: string;
   description: string;
-  price: string;
+  price: number;
   categories: string[];
   sizes: { size: string; stock: number }[];
   image: File | null;

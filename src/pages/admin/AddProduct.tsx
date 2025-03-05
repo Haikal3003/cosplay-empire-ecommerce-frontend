@@ -3,18 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import FormInput from '../../components/common/FormInput';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { AddProductPayload } from '../../utils/types';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../utils/api';
+import { usePrefix } from '../../hooks/usePrefix';
 
 type SizeTypes = 'S' | 'M' | 'L' | 'XL';
 
 export default function AddProduct() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const prefix = usePrefix(); // Panggil hook di luar fungsi
 
   const [formData, setFormData] = useState<AddProductPayload>({
     name: '',
     description: '',
-    price: '',
+    price: 0,
     categories: [],
     sizes: [],
     image: null as File | null,
@@ -33,6 +36,8 @@ export default function AddProduct() {
     onSuccess: () => {
       alert('Product added successfully!');
       setImagePreview(null);
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      navigate(`${prefix}/products`);
     },
     onError: (error) => {
       alert(`Failed to add product: ${error.message}`);
@@ -49,7 +54,10 @@ export default function AddProduct() {
       const imageUrl = URL.createObjectURL(file);
       setImagePreview(imageUrl);
     } else if (type === 'number') {
-      setFormData((prev) => ({ ...prev, [name]: parseFloat(value).toString() }));
+      setFormData((prev) => ({
+        ...prev,
+        [name]: parseFloat(value),
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -60,10 +68,10 @@ export default function AddProduct() {
   };
 
   const handleStockChange = (size: SizeTypes, e: ChangeEvent<HTMLInputElement>) => {
-    const stockValue = parseInt(e.target.value) || 0;
+    const stockValue = parseInt(e.target.value);
     setFormData((prev) => {
-      const updatedSizes = prev.sizes.filter((s) => s.size !== size);
-      return { ...prev, sizes: [...updatedSizes, { size, stock: stockValue }] };
+      const updatedSizes = prev.sizes.map((s) => (s.size === size ? { ...s, stock: stockValue } : s));
+      return { ...prev, sizes: updatedSizes };
     });
   };
 
@@ -103,7 +111,7 @@ export default function AddProduct() {
             name="image"
             label="Upload Image"
             type="file"
-            labelClassName="text-sm cursor-pointer p-3 w-full max-w-[140px] text-center bg-red-500 hover:bg-red-600 rounded-lg text-white"
+            labelClassName="text-sm cursor-pointer p-2 w-full max-w-[140px] text-center bg-white border border-slate-300 rounded-lg hover:bg-slate-100"
             inputClassName="text-sm "
             onChange={handleChange}
           />
@@ -123,8 +131,8 @@ export default function AddProduct() {
           </div>
         </div>
 
-        <button type="submit" className="flex justify-center col-span-2 p-3 bg-red-500 text-white rounded-lg hover:bg-red-600">
-          Submit
+        <button type="submit" className="flex text-sm justify-center col-span-2 py-3 px-6 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer">
+          Create
         </button>
       </form>
     </div>

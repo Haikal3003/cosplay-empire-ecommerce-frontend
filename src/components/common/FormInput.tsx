@@ -14,7 +14,7 @@ export default function FormInput({ id, label, type, labelClassName = '', inputC
         </label>
       )}
       <div className="relative">
-        <input id={id} type={inputType} className={` p-2 border border-gray-300 rounded-lg w-full ${inputClassName}`} {...props} />
+        <input id={id} type={inputType} className={` p-2 border border-gray-300 bg-white rounded-lg w-full ${inputClassName}`} {...props} />
         {type === 'password' && (
           <button type="button" className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" onClick={() => setIsVisible(!isVisible)}>
             {isVisible ? <AiOutlineEyeInvisible size={16} /> : <AiOutlineEye size={16} />}
