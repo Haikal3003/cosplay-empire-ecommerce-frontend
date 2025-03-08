@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useState, useEffect } from 'react';
 import { LoginPayload, RegisterPayload } from '../utils/types';
 import api from '../utils/api';
 import { delayResponse } from '../utils/delayResponse';
@@ -21,6 +21,32 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<string>('');
   const [message, setMessage] = useState<string>('');
 
+  const handleTokenExpired = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    setUser(null);
+    setRole('');
+    setMessage('Session expired. Please log in again.');
+
+    window.location.href = '/login';
+  };
+
+  useEffect(() => {
+    const interceptor = api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          handleTokenExpired();
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      api.interceptors.response.eject(interceptor);
+    };
+  }, []);
+
   const login = async (payload: LoginPayload, navigate: (path: string) => void) => {
     setLoading(true);
     setMessage('');
@@ -41,7 +67,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       navigate(user.role === 'ADMIN' ? '/admin/dashboard' : '/home');
     } catch (error: any) {
       console.error(error);
-      setMessage(error.response?.data?.message || 'Login gagal. Silakan coba lagi.');
+      setMessage(error.response?.data?.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -59,7 +85,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       navigate('/login');
     } catch (error: any) {
       console.error(error);
-      setMessage(error.response?.data?.message || 'Register gagal. Silakan coba lagi.');
+      setMessage(error.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }

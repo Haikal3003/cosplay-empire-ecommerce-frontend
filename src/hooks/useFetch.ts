@@ -3,7 +3,7 @@ import api from '../utils/api';
 import { delayResponse } from '../utils/delayResponse';
 
 const useFetch = (endpoint: string, delay: number = 1000) => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

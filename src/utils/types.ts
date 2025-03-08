@@ -27,3 +27,28 @@ export type AddProductPayload = {
   sizes: { size: string; stock: number }[];
   image: File | null;
 };
+
+// Products
+type Category = {
+  id: string;
+  name: string;
+};
+
+type Size = {
+  id: string;
+  size: string;
+  stock: number;
+  productId: string;
+};
+
+export type Product = {
+  id: string;
+  name: string;
+  description: string;
+  price: string;
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+  category: Category[];
+  sizes: Size[];
+};
