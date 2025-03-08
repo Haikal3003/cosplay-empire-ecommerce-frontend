@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Product } from '../../../utils/types';
 import { usePrefix } from '../../../hooks/usePrefix';
-import { FaEye, FaEdit, FaTrash, FaGalacticSenate } from 'react-icons/fa'; // Import ikon dari react-icons
+import { FaEye, FaEdit, FaTrash } from 'react-icons/fa'; 
 import { useState } from 'react';
 import api from '../../../utils/api';
 import DeleteConfirmationModal from '../../modal/DeleteConfirmationModal';
