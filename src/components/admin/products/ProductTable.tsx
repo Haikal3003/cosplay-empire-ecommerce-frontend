@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Product } from '../../../utils/types';
 import { usePrefix } from '../../../hooks/usePrefix';
-import { FaEye, FaEdit, FaTrash } from 'react-icons/fa'; 
+import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import { useState } from 'react';
 import api from '../../../utils/api';
 import DeleteConfirmationModal from '../../modal/DeleteConfirmationModal';
@@ -75,7 +75,7 @@ export default function ProductTable({ products }: Props) {
 
   return (
     <>
-      <table className="w-full table-auto border border-slate-300 table-layout-auto">
+      <table className="w-full table-auto border border-slate-300 table-layout-auto bg-white">
         <thead>
           <tr>
             {tableHeaders.map((header, index) => (
